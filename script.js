@@ -1,4 +1,4 @@
-function addTask() {
+window.addTask = function () {
   let input = document.getElementById("taskInput");
 
   let task = input.value.trim();
