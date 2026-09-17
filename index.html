@@ -1,24 +1,1144 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>TaskFlow</title>
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <div class="container">
-      <h1>TaskFlow</h1>
 
-      <p>Simple Task Manager</p>
+<head>
 
-      <input type="text" id="taskInput" placeholder="Enter a task" />
+    <meta charset="UTF-8">
 
-      <button onclick="addTask()">Add Task</button>
-      <p>Total Tasks: <span id="count">0</span></p>
-      <ul id="taskList"></ul>
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>TaskFlow - Smart Task Manager</title>
+
+    <link
+        rel="stylesheet"
+        href="css/style.css"
+    >
+
+</head>
+
+
+<body>
+
+<div class="app">
+
+
+    <!-- ==========================================
+         SIDEBAR
+         ========================================== -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+
+            <div class="logo-icon">
+                ✓
+            </div>
+
+            <h2>TaskFlow</h2>
+
+        </div>
+
+
+        <nav>
+
+            <button
+                class="nav-item active"
+                onclick="showSection('dashboard')"
+            >
+                🏠 Dashboard
+            </button>
+
+
+            <button
+                class="nav-item"
+                onclick="showSection('tasks')"
+            >
+                📋 My Tasks
+            </button>
+
+
+            <button
+                class="nav-item"
+                onclick="showSection('completed')"
+            >
+                ✅ Completed
+            </button>
+
+
+            <button
+                class="nav-item"
+                onclick="showSection('analytics')"
+            >
+                📊 Analytics
+            </button>
+
+        </nav>
+
+
+        <div class="sidebar-bottom">
+
+            <button
+                onclick="toggleTheme()"
+                class="theme-btn"
+            >
+                🌙 Dark Mode
+            </button>
+
+
+            <button
+                onclick="logout()"
+                class="theme-btn logout-btn"
+            >
+                🚪 Logout
+            </button>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- ==========================================
+         MAIN
+         ========================================== -->
+
+    <main class="main">
+
+
+        <!-- HEADER -->
+
+        <header class="header">
+
+            <div>
+
+                <h1 id="pageTitle">
+                    Dashboard
+                </h1>
+
+                <p>
+                    Welcome back,
+                    <strong id="userName">
+                        User
+                    </strong>!
+                </p>
+
+            </div>
+
+
+            <div class="header-actions">
+
+
+                <!-- NOTIFICATION BUTTON -->
+
+                <button
+                    class="notification-btn"
+                    onclick="toggleNotifications()"
+                    title="Notifications"
+                >
+
+                    🔔
+
+                    <span
+                        id="notificationCount"
+                        class="notification-count hidden"
+                    >
+                        0
+                    </span>
+
+                </button>
+
+
+                <!-- ADD TASK -->
+
+                <button
+                    class="add-btn"
+                    onclick="openTaskModal()"
+                >
+                    + Add Task
+                </button>
+
+            </div>
+
+        </header>
+
+
+
+        <!-- ==========================================
+             NOTIFICATION PANEL
+             ========================================== -->
+
+        <div
+            id="notificationPanel"
+            class="notification-panel hidden"
+        >
+
+            <div class="notification-header">
+
+                <div>
+
+                    <h3>
+                        Notifications
+                    </h3>
+
+                    <p>
+                        Task reminders and alerts
+                    </p>
+
+                </div>
+
+
+                <button
+                    onclick="clearNotifications()"
+                    class="clear-notifications"
+                >
+                    Clear
+                </button>
+
+            </div>
+
+
+            <div
+                id="notificationList"
+                class="notification-list"
+            >
+
+                <div class="empty">
+                    🔔 No notifications.
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ==========================================
+             DASHBOARD
+             ========================================== -->
+
+        <section
+            id="dashboard"
+            class="section"
+        >
+
+
+            <!-- STATISTICS -->
+
+            <div class="stats">
+
+
+                <div class="stat-card">
+
+                    <div class="stat-icon">
+                        📋
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Total Tasks
+                        </span>
+
+                        <h2 id="totalTasks">
+                            0
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="stat-card">
+
+                    <div class="stat-icon">
+                        ⏳
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Pending
+                        </span>
+
+                        <h2 id="pendingTasks">
+                            0
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="stat-card">
+
+                    <div class="stat-icon">
+                        ✅
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Completed
+                        </span>
+
+                        <h2 id="completedTasks">
+                            0
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="stat-card">
+
+                    <div class="stat-icon">
+                        ⚠️
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Overdue
+                        </span>
+
+                        <h2 id="overdueTasks">
+                            0
+                        </h2>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- PRODUCTIVITY -->
+
+            <div class="card progress-card">
+
+                <div class="card-header">
+
+                    <div>
+
+                        <h2>
+                            Productivity
+                        </h2>
+
+                        <p>
+                            Your task completion progress
+                        </p>
+
+                    </div>
+
+
+                    <strong id="progressText">
+                        0%
+                    </strong>
+
+                </div>
+
+
+                <div class="progress-bar">
+
+                    <div
+                        id="progressFill"
+                    ></div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- RECENT TASKS -->
+
+            <div class="card">
+
+                <div class="card-header">
+
+                    <div>
+
+                        <h2>
+                            Recent Tasks
+                        </h2>
+
+                        <p>
+                            Your latest tasks
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="recentTasks"
+                    class="task-list"
+                ></div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ==========================================
+             MY TASKS
+             ========================================== -->
+
+        <section
+            id="tasks"
+            class="section hidden"
+        >
+
+
+            <div class="toolbar">
+
+                <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="🔍 Search tasks..."
+                    oninput="renderTasks()"
+                >
+
+
+                <select
+                    id="filterCategory"
+                    onchange="renderTasks()"
+                >
+
+                    <option value="all">
+                        All Categories
+                    </option>
+
+                    <option value="College">
+                        College
+                    </option>
+
+                    <option value="Project">
+                        Project
+                    </option>
+
+                    <option value="Personal">
+                        Personal
+                    </option>
+
+                    <option value="Work">
+                        Work
+                    </option>
+
+                </select>
+
+
+                <select
+                    id="filterPriority"
+                    onchange="renderTasks()"
+                >
+
+                    <option value="all">
+                        All Priorities
+                    </option>
+
+                    <option value="high">
+                        High
+                    </option>
+
+                    <option value="medium">
+                        Medium
+                    </option>
+
+                    <option value="low">
+                        Low
+                    </option>
+
+                </select>
+
+
+                <select
+                    id="filterStatus"
+                    onchange="renderTasks()"
+                >
+
+                    <option value="all">
+                        All Status
+                    </option>
+
+                    <option value="pending">
+                        Pending
+                    </option>
+
+                    <option value="completed">
+                        Completed
+                    </option>
+
+                </select>
+
+            </div>
+
+
+
+            <div class="card">
+
+                <div class="card-header">
+
+                    <div>
+
+                        <h2>
+                            My Tasks
+                        </h2>
+
+                        <p>
+                            Manage all your tasks
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="taskList"
+                    class="task-list"
+                ></div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ==========================================
+             COMPLETED
+             ========================================== -->
+
+        <section
+            id="completed"
+            class="section hidden"
+        >
+
+            <div class="card">
+
+                <div class="card-header">
+
+                    <div>
+
+                        <h2>
+                            Completed Tasks
+                        </h2>
+
+                        <p>
+                            Tasks you have finished
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="completedList"
+                    class="task-list"
+                ></div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ==========================================
+             ANALYTICS
+             ========================================== -->
+
+        <section
+            id="analytics"
+            class="section hidden"
+        >
+
+
+            <div class="analytics-header">
+
+                <div>
+
+                    <h2>
+                        Productivity Analytics
+                    </h2>
+
+                    <p>
+                        Understand your task management
+                        and productivity.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- SUMMARY -->
+
+            <div class="analytics-summary">
+
+
+                <div class="analytics-card">
+
+                    <div class="analytics-icon">
+                        📋
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Total Tasks
+                        </span>
+
+                        <h2 id="analyticsTotal">
+                            0
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="analytics-card">
+
+                    <div class="analytics-icon">
+                        ✅
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Completed
+                        </span>
+
+                        <h2 id="analyticsCompleted">
+                            0
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="analytics-card">
+
+                    <div class="analytics-icon">
+                        ⏳
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Pending
+                        </span>
+
+                        <h2 id="analyticsPending">
+                            0
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="analytics-card">
+
+                    <div class="analytics-icon">
+                        📈
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Completion Rate
+                        </span>
+
+                        <h2 id="analyticsRate">
+                            0%
+                        </h2>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- COMPLETION -->
+
+            <div class="card">
+
+                <div class="card-header">
+
+                    <div>
+
+                        <h2>
+                            Overall Completion
+                        </h2>
+
+                        <p>
+                            Percentage of completed tasks
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="analytics-progress">
+
+                    <div
+                        id="analyticsProgressFill"
+                    ></div>
+
+                </div>
+
+
+                <div class="analytics-progress-text">
+
+                    <span>
+                        Progress
+                    </span>
+
+                    <strong
+                        id="analyticsProgressText"
+                    >
+                        0%
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- DISTRIBUTION -->
+
+            <div class="analytics-grid">
+
+
+                <!-- PRIORITY -->
+
+                <div class="card">
+
+                    <div class="card-header">
+
+                        <div>
+
+                            <h2>
+                                Priority Distribution
+                            </h2>
+
+                            <p>
+                                Tasks by priority
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="distribution">
+
+
+                        <div class="distribution-row">
+
+                            <div class="distribution-label">
+
+                                <span>
+                                    🔴 High
+                                </span>
+
+                                <strong id="highCount">
+                                    0
+                                </strong>
+
+                            </div>
+
+
+                            <div class="distribution-bar">
+
+                                <div
+                                    id="highBar"
+                                    class="high-bar"
+                                ></div>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <div class="distribution-row">
+
+                            <div class="distribution-label">
+
+                                <span>
+                                    🟡 Medium
+                                </span>
+
+                                <strong id="mediumCount">
+                                    0
+                                </strong>
+
+                            </div>
+
+
+                            <div class="distribution-bar">
+
+                                <div
+                                    id="mediumBar"
+                                    class="medium-bar"
+                                ></div>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <div class="distribution-row">
+
+                            <div class="distribution-label">
+
+                                <span>
+                                    🟢 Low
+                                </span>
+
+                                <strong id="lowCount">
+                                    0
+                                </strong>
+
+                            </div>
+
+
+                            <div class="distribution-bar">
+
+                                <div
+                                    id="lowBar"
+                                    class="low-bar"
+                                ></div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- CATEGORY -->
+
+                <div class="card">
+
+                    <div class="card-header">
+
+                        <div>
+
+                            <h2>
+                                Category Distribution
+                            </h2>
+
+                            <p>
+                                Tasks by category
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="distribution">
+
+
+                        <div class="distribution-row">
+
+                            <div class="distribution-label">
+
+                                <span>
+                                    🎓 College
+                                </span>
+
+                                <strong id="collegeCount">
+                                    0
+                                </strong>
+
+                            </div>
+
+
+                            <div class="distribution-bar">
+
+                                <div
+                                    id="collegeBar"
+                                ></div>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <div class="distribution-row">
+
+                            <div class="distribution-label">
+
+                                <span>
+                                    🚀 Project
+                                </span>
+
+                                <strong id="projectCount">
+                                    0
+                                </strong>
+
+                            </div>
+
+
+                            <div class="distribution-bar">
+
+                                <div
+                                    id="projectBar"
+                                ></div>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <div class="distribution-row">
+
+                            <div class="distribution-label">
+
+                                <span>
+                                    🏠 Personal
+                                </span>
+
+                                <strong id="personalCount">
+                                    0
+                                </strong>
+
+                            </div>
+
+
+                            <div class="distribution-bar">
+
+                                <div
+                                    id="personalBar"
+                                ></div>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <div class="distribution-row">
+
+                            <div class="distribution-label">
+
+                                <span>
+                                    💼 Work
+                                </span>
+
+                                <strong id="workCount">
+                                    0
+                                </strong>
+
+                            </div>
+
+
+                            <div class="distribution-bar">
+
+                                <div
+                                    id="workBar"
+                                ></div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+
+<!-- ==========================================
+     TASK MODAL
+     ========================================== -->
+
+<div
+    id="taskModal"
+    class="modal hidden"
+>
+
+    <div class="modal-content">
+
+
+        <div class="modal-header">
+
+            <h2 id="modalTitle">
+                Add New Task
+            </h2>
+
+
+            <button
+                onclick="closeTaskModal()"
+                class="close-btn"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+
+        <form id="taskForm">
+
+
+            <input
+                type="hidden"
+                id="taskId"
+            >
+
+
+            <label>
+                Task Title
+            </label>
+
+            <input
+                type="text"
+                id="taskTitle"
+                placeholder="Enter task title"
+                required
+            >
+
+
+            <label>
+                Description
+            </label>
+
+            <textarea
+                id="taskDescription"
+                placeholder="Enter task description"
+            ></textarea>
+
+
+
+            <div class="form-row">
+
+                <div>
+
+                    <label>
+                        Category
+                    </label>
+
+                    <select id="taskCategory">
+
+                        <option value="College">
+                            College
+                        </option>
+
+                        <option value="Project">
+                            Project
+                        </option>
+
+                        <option value="Personal">
+                            Personal
+                        </option>
+
+                        <option value="Work">
+                            Work
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div>
+
+                    <label>
+                        Priority
+                    </label>
+
+                    <select id="taskPriority">
+
+                        <option value="low">
+                            Low
+                        </option>
+
+                        <option
+                            value="medium"
+                            selected
+                        >
+                            Medium
+                        </option>
+
+                        <option value="high">
+                            High
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+
+            <label>
+                Due Date
+            </label>
+
+            <input
+                type="date"
+                id="taskDueDate"
+                required
+            >
+
+
+            <button
+                type="submit"
+                class="save-btn"
+            >
+                Save Task
+            </button>
+
+        </form>
+
     </div>
 
-    <script src="script.js"></script>
-  </body>
+</div>
+
+
+
+<script src="js/script.js"></script>
+
+</body>
+
 </html>
